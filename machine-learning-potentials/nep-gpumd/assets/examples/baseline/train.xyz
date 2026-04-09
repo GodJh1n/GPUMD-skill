@@ -1,0 +1,8 @@
+2
+Lattice="5.43 0 0 0 5.43 0 0 0 5.43" pbc="T T T" energy=-10.860000 config_type=bulk_eq Properties=species:S:1:pos:R:3:force:R:3
+Si 0.000000 0.000000 0.000000  0.0010 -0.0020  0.0030
+Si 1.357500 1.357500 1.357500 -0.0010  0.0020 -0.0030
+2
+Lattice="5.43 0 0 0 5.43 0 0 0 5.43" pbc="T T T" energy=-10.845000 config_type=bulk_perturb Properties=species:S:1:pos:R:3:force:R:3
+Si 0.010000 0.000000 0.000000  0.0100 -0.0040  0.0060
+Si 1.347500 1.357500 1.357500 -0.0100  0.0040 -0.0060

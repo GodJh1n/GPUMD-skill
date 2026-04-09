@@ -1,0 +1,11 @@
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+*.swp
+.pytest_cache/
+.venv/
+venv/
+
+# Upstream cloned tool repositories are reproducible via the bootstrap script.
+gpumd-tool-sources/

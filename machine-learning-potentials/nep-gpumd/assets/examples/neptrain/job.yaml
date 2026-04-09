@@ -1,0 +1,45 @@
+version: 2.0.0
+work_path: ./cache
+current_job: nep
+init_train_xyz: ./train.xyz
+init_nep_txt: ./nep.txt
+
+nep:
+  nep_restart: true
+  nep_restart_step: 10000
+  nep_in_path: ./nep.in
+  test_xyz_path: ./test.xyz
+  machine:
+    context_type: LazyLocal
+    batch_type: Shell
+    local_root: ./
+    remote_root: ./
+  resources:
+    number_node: 1
+    gpu_per_node: 1
+    group_size: 1
+
+gpumd:
+  step_times:
+  - 10
+  - 50
+  - 100
+  temperature_every_step:
+  - 300
+  - 600
+  model_path: ./structure
+  run_in_path: ./run.in
+  machine:
+    context_type: LazyLocal
+    batch_type: Shell
+    local_root: ./
+    remote_root: ./
+  resources:
+    number_node: 1
+    gpu_per_node: 1
+    group_size: 1
+
+select:
+  max_selected: 20
+  min_distance: 0.01
+  filter: 0.6
