@@ -10,7 +10,7 @@ compatibility: Requires NepTrain (pip install neptrain) and/or NepTrainKit when 
 catalog-hidden: true
 license: GPL-3.0-only
 metadata:
-  author: Codex
+  author: Jhin
   version: 0.2.0
 ---
 

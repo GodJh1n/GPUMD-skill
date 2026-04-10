@@ -9,7 +9,7 @@ compatibility: Requires GPUMD and a potential that is numerically stable in the 
 catalog-hidden: true
 license: GPL-3.0-only
 metadata:
-  author: Codex
+  author: Jhin
   version: 0.2.0
 ---
 

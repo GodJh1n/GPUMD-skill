@@ -10,7 +10,7 @@ compatibility: Requires a NEP-capable GPUMD build with the `nep` executable and 
 catalog-hidden: true
 license: GPL-3.0-only
 metadata:
-  author: Codex
+  author: Jhin
   version: 0.2.0
 ---
 

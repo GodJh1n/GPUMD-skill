@@ -9,7 +9,7 @@ compatibility: Requires GPUMD and a potential stable in the target fluid / ionic
 catalog-hidden: true
 license: GPL-3.0-only
 metadata:
-  author: Codex
+  author: Jhin
   version: 0.1.0
 ---
 

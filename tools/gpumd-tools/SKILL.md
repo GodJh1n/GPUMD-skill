@@ -11,7 +11,7 @@ compatibility: >
   and NepTrainKit. If absent, use the bundled bootstrap script to clone them.
 license: GPL-3.0-only
 metadata:
-  author: Codex
+  author: Jhin
   version: 0.2.0
 ---
 

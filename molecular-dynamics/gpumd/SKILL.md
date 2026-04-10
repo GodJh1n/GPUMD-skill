@@ -13,7 +13,7 @@ compatibility: >
   file (`nep.txt`, `nep89_*.txt`, Tersoff, etc.) is required.
 license: GPL-3.0-only
 metadata:
-  author: Codex
+  author: Jhin
   version: 0.2.0
   repository: https://github.com/brucefan1983/GPUMD
   documentation: https://gpumd.org/

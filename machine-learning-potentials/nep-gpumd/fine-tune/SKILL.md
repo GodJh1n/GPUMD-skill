@@ -9,7 +9,7 @@ compatibility: Requires an existing NEP model. True fine-tuning also requires th
 catalog-hidden: true
 license: GPL-3.0-only
 metadata:
-  author: Codex
+  author: Jhin
   version: 0.2.0
 ---
 
