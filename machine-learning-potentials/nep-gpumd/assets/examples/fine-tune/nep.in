@@ -23,4 +23,4 @@ lambda_f   1.0
 lambda_v   0.1
 batch      1000
 population 50
-generation 5000
+generation 5000    # fine-tuning converges faster; increase to 10000-50000 for large domain shifts

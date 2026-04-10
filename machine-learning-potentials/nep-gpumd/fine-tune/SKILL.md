@@ -108,6 +108,11 @@ population 50
 generation 5000
 ```
 
+Fine-tuning typically converges faster than training from scratch, so
+`generation 5000` can be sufficient for small-shift fine-tuning. For
+significant domain shifts or low-data regimes, increase to 10000–50000
+and monitor `loss.out` for convergence.
+
 Important rules:
 
 - `cutoff`, `n_max`, `basis_size`, `l_max`, `neuron`, `zbl` must match the

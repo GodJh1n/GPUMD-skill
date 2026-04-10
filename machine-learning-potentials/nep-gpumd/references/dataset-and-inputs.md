@@ -35,8 +35,12 @@ lambda_f     1.0
 lambda_v     0.1
 batch        1000
 population   50
-generation   5000
+generation   100000
 ```
+
+> **Note**: `generation 5000` is only useful as a quick smoke test.
+> Production fits typically need 50000–200000 generations. Start with
+> `100000` and increase if the `loss.out` curve has not plateaued.
 
 Key rule:
 
