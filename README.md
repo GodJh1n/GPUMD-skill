@@ -21,9 +21,6 @@ You only need to install the **three top-level skills** in this repository:
 - `machine-learning-potentials/nep-gpumd`
 - `tools/gpumd-tools`
 
-Do **not** install anything under `gpumd-tool-sources/`; that directory is only
-an upstream source mirror for local reference and tooling.
-
 ### Option 1: clone the repository
 
 ```bash
