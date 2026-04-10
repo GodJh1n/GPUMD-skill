@@ -42,8 +42,7 @@ Before trusting a converted dataset:
 
 Then run a header validator from the relevant installed skill:
 
-- the NEP skill's `scripts/validate_extxyz_headers.py` for `train.xyz` or `test.xyz`
-- the GPUMD skill's `scripts/validate_extxyz_headers.py` for `model.xyz`
+- `scripts/validate_extxyz_headers.py` for both `train.xyz`/`test.xyz` (`--mode train`) and `model.xyz` (`--mode model`)
 
 ## 4. Group labels and workflow-specific preprocessing
 

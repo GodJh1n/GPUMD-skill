@@ -100,7 +100,7 @@ help set up the DFT input.
 After conversion, validate the dataset:
 
 ```bash
-python scripts/validate_extxyz_headers.py train.xyz --mode train
+python tools/gpumd-tools/scripts/validate_extxyz_headers.py train.xyz --mode train
 ```
 
 Also check:

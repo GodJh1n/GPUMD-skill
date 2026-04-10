@@ -106,8 +106,8 @@ A training dataset should cover the states that matter downstream:
 Use the bundled checker before training:
 
 ```bash
-python scripts/validate_extxyz_headers.py train.xyz --mode train
-python scripts/validate_extxyz_headers.py test.xyz --mode train
+python tools/gpumd-tools/scripts/validate_extxyz_headers.py train.xyz --mode train
+python tools/gpumd-tools/scripts/validate_extxyz_headers.py test.xyz --mode train
 ```
 
 This catches:
@@ -133,4 +133,3 @@ Use it to evaluate an existing model on a labeled dataset before deciding whethe
 - NEP docs: <https://gpumd.org/nep/index.html>
 - `nep.in` docs: <https://gpumd.org/nep/input_files/nep_in.html>
 - `train.xyz` / `test.xyz` docs: <https://gpumd.org/nep/input_files/train_test_xyz.html>
-

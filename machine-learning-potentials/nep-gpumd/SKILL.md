@@ -50,8 +50,8 @@ training one, route to `molecular-dynamics/gpumd` instead.
 4. Write `nep.in` yourself and explain every block.
 5. Validate headers before training:
    ```bash
-   python scripts/validate_extxyz_headers.py train.xyz --mode train
-   python scripts/validate_extxyz_headers.py test.xyz --mode train
+   python ../../tools/gpumd-tools/scripts/validate_extxyz_headers.py train.xyz --mode train
+   python ../../tools/gpumd-tools/scripts/validate_extxyz_headers.py test.xyz --mode train
    ```
 6. Report final files (`nep.txt`, `loss.out`, parity outputs) and a short
    downstream validation plan.

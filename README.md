@@ -31,8 +31,8 @@ GPUMD task router with subskills for:
 thermal transport workflow, diffusion/viscosity, elastic constants,
 mechanics/deposition/friction, tutorial map.
 
-**Scripts**: `validate_extxyz_headers.py`, `average_hnemd_kappa.py`,
-`parse_thermo.py`, `fit_msd_diffusion.py`.
+**Scripts**: `average_hnemd_kappa.py`, `parse_thermo.py`,
+`fit_msd_diffusion.py`.
 
 ### `machine-learning-potentials/nep-gpumd`
 
@@ -48,8 +48,8 @@ NEP task router with subskills for:
 fine-tuning playbook, keyword cheatsheet, auxiliary properties
 (dipole/polarizability), labels from DFT.
 
-**Scripts**: `validate_extxyz_headers.py`, `summarize_nep_loss.py`,
-`split_train_test.py`, `parity_from_nep_outputs.py`.
+**Scripts**: `summarize_nep_loss.py`, `split_train_test.py`,
+`parity_from_nep_outputs.py`.
 
 **Templates**: baseline, prediction, fine-tune, nep89, dipole,
 polarizability, neptrain.
@@ -64,8 +64,8 @@ Tooling layer for:
 - GPUMDkit, calorine, gpyumd, PyNEP ecosystem
 - Tutorial and example lookup
 
-**Scripts**: `bootstrap_gpumd_tool_sources.sh`,
-`index_local_gpumd_sources.py`.
+**Scripts**: `validate_extxyz_headers.py` (shared),
+`bootstrap_gpumd_tool_sources.sh`, `index_local_gpumd_sources.py`.
 
 ## File tree overview
 

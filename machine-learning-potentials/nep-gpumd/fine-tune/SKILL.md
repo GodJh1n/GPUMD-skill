@@ -186,11 +186,12 @@ Read when needed:
 ## Bundled templates
 
 - [assets/examples/prediction/nep.in](../assets/examples/prediction/nep.in)
-- [assets/examples/fine-tune/nep.in](../assets/examples/fine-tune/nep.in)
+- [assets/examples/fine-tune/nep.in](../assets/examples/fine-tune/nep.in) — generic fine-tune template
 - [assets/examples/fine-tune/model.xyz](../assets/examples/fine-tune/model.xyz)
 - [assets/examples/fine-tune/out-of-box-hnemd-run.in](../assets/examples/fine-tune/out-of-box-hnemd-run.in)
 - [assets/examples/fine-tune/sampling-run.in](../assets/examples/fine-tune/sampling-run.in)
-- [assets/examples/nep89/nep.in](../assets/examples/nep89/nep.in)
+- [assets/examples/nep89/nep.in](../assets/examples/nep89/nep.in) — NEP89 prediction mode
+- [assets/examples/nep89/fine-tune.in](../assets/examples/nep89/fine-tune.in) — NEP89 fine-tune
 
 ## Expected output
 

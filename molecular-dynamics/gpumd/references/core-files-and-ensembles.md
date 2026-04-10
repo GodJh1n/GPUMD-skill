@@ -47,7 +47,7 @@ Sanity checks that matter:
 - `Lattice` must contain exactly 9 numbers.
 - `pbc` must match the intended physics. For example, many 2D materials should use `T T F`, not `T T T`.
 
-Use `scripts/validate_extxyz_headers.py model.xyz --mode model` for a fast header check.
+Use `tools/gpumd-tools/scripts/validate_extxyz_headers.py model.xyz --mode model` for a fast header check.
 
 ## 2. `run.in`
 

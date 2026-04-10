@@ -43,8 +43,8 @@ equivalent — ask the user.
    - target observable(s) for post-training validation
 3. Validate dataset headers before training:
    ```bash
-   python scripts/validate_extxyz_headers.py train.xyz --mode train
-   python scripts/validate_extxyz_headers.py test.xyz --mode train
+   python ../../../tools/gpumd-tools/scripts/validate_extxyz_headers.py train.xyz --mode train
+   python ../../../tools/gpumd-tools/scripts/validate_extxyz_headers.py test.xyz --mode train
    ```
 4. Write `nep.in` yourself and explain the hyperparameters that matter.
 5. Run training and monitor `loss.out`.
@@ -259,7 +259,7 @@ Read when needed:
 - [assets/examples/baseline/nep.in](../assets/examples/baseline/nep.in)
 - [assets/examples/baseline/train.xyz](../assets/examples/baseline/train.xyz)
 - [assets/examples/baseline/test.xyz](../assets/examples/baseline/test.xyz)
-- [scripts/validate_extxyz_headers.py](../scripts/validate_extxyz_headers.py)
+- [validate_extxyz_headers.py](../../../tools/gpumd-tools/scripts/validate_extxyz_headers.py)
 - [scripts/summarize_nep_loss.py](../scripts/summarize_nep_loss.py)
 - [scripts/split_train_test.py](../scripts/split_train_test.py)
 - [scripts/parity_from_nep_outputs.py](../scripts/parity_from_nep_outputs.py)
