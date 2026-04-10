@@ -1,0 +1,20 @@
+potential   nep.txt
+velocity    600
+
+time_step   2
+
+# equilibrate the solid below the melting point
+ensemble    npt_ber 600 600 100 0 0 0 100 100 100 1000
+dump_exyz   10000 0 0
+run         10000
+
+# Langevin heat bath to drive through melting
+ensemble    heat_lan 1600 100 1000 0 1
+dump_exyz   10000 0 0
+run         10000
+
+# hold near the target liquid temperature with a soft NPT (mimicking NPH)
+ensemble    npt_ber 1600 1600 1e20 0 0 0 50 50 50 1000
+dump_thermo 100
+dump_exyz   10000 0 0
+run         100000

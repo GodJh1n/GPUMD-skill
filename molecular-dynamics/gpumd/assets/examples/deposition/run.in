@@ -1,0 +1,20 @@
+# Deposition template.
+# Intended group layout in model.xyz:
+#   group 0 : frozen bottom substrate
+#   group 1 : Langevin-thermostatted substrate layer
+#   group 2 : free top surface and deposited adatoms
+#
+# For actual deposition events, drive this run.in from an external script
+# (see the `16_Deposition` tutorial's deposition.py) that repeatedly inserts
+# adatoms above the slab and resumes the GPUMD run.
+
+potential   nep.txt
+velocity    300
+time_step   1
+
+ensemble    heat_lan 300 100 0 1
+fix         0
+
+dump_thermo 100
+dump_exyz   1000 0 0
+run         100000

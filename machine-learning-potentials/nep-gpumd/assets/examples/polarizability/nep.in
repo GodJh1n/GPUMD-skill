@@ -1,0 +1,18 @@
+# NEP polarizability model — model_type 2
+# Train a polarizability model for Raman spectra or optical response.
+# Dataset must contain polarizability="xx yy zz xy yz zx" in headers (Å³).
+# Forces are NOT required in the dataset for this model type.
+
+model_type   2
+type         1 Si
+version      4
+cutoff       8 4
+n_max        4 4
+basis_size   8 8
+l_max        4 2 0
+neuron       30
+lambda_e     1.0
+lambda_v     0.1
+batch        1000
+population   50
+generation   50000

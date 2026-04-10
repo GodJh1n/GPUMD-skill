@@ -1,0 +1,13 @@
+potential   nep.txt
+velocity    300
+
+# Anisotropic NPT: all six shape degrees of freedom are free to fluctuate.
+# Block = T_start T_stop tau_T  p_xx p_yy p_zz p_xy p_xz p_yz  C_xx C_yy C_zz C_xy C_xz C_yz  tau_p
+ensemble    npt_scr 300 300 100 0 0 0 0 0 0 100 100 100 100 100 100 2000
+time_step   1
+dump_thermo 100
+
+# compute_elastic amplitude symmetry (cubic / hexagonal / tetragonal / orthorhombic)
+compute_elastic 0.01 cubic
+
+run         1100000

@@ -1,0 +1,17 @@
+# NEP dipole model — model_type 1
+# Train a dipole model for IR spectra or dielectric response.
+# Dataset must contain dipole="dx dy dz" in extxyz headers (e·Å).
+# Forces are NOT required in the dataset for this model type.
+
+model_type   1
+type         1 Si
+version      4
+cutoff       8 4
+n_max        4 4
+basis_size   8 8
+l_max        4 2 0
+neuron       30
+lambda_e     1.0
+batch        1000
+population   50
+generation   50000

@@ -1,0 +1,30 @@
+# Synthetic layered-friction template.
+# The intended layout has four groups declared in model.xyz:
+#   group 0 : ghost driver layer (spring-driven)
+#   group 1 : Langevin thermostat layer
+#   group 2 : free production layer
+#   group 3 : frozen substrate
+#
+# Real friction workflows typically combine a NEP potential for the layers
+# with an interlayer potential (e.g. ILP). Replace the potential lines
+# below with the files the user actually has available.
+
+potential   nep.txt
+# potential   gr_bn_mos2.ilp
+
+velocity    300
+time_step   1
+
+# Langevin thermostat on group 1 only
+ensemble    heat_lan 300 100 0 1 2
+
+# freeze the bottom substrate completely
+fix         3
+
+# Spring between centre-of-mass of group 0 and a ghost driver moving along x
+# add_spring ghost_atom g k x0 y0 z0 axis v0 vx vy
+add_spring  ghost_atom 0 100.0 0.0 0.0 0.0 0 0.0005 0.0 0.0
+
+dump_thermo 100
+dump_exyz   10000 0 0
+run         1000000

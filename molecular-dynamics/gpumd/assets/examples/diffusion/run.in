@@ -1,0 +1,24 @@
+potential   nep.txt
+velocity    2500
+
+time_step   2
+
+# equilibrate at 2500 K (above melting for silicon with Si_2022_NEP3_3body)
+ensemble    npt_scr 2500 2500 100 0 50 1000
+dump_exyz   10000 0 0
+dump_thermo 100
+run         10000
+
+# cool to the target temperature
+ensemble    npt_scr 1800 1800 100 0 50 1000
+dump_exyz   10000 0 0
+dump_thermo 100
+run         10000
+
+# production in NVE, both MSD and VAC running simultaneously
+ensemble    nve
+dump_thermo 100
+dump_exyz   100000 0 0
+compute_sdc 1 2000
+compute_msd 1 2000
+run         20000

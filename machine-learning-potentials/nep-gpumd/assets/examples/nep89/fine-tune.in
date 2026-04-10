@@ -1,0 +1,30 @@
+# NEP89 fine-tuning template
+# Fine-tune the NEP89 foundation model for a specific material.
+# Requires BOTH nep89_20250409.txt AND nep89_20250409.restart.
+#
+# IMPORTANT:
+# - Descriptor parameters (cutoff, n_max, basis_size, l_max, neuron, zbl)
+#   MUST match the base model — they cannot be changed.
+# - Only training-control parameters can vary (lambda_*, batch, generation).
+# - The type line lists ONLY the species in your new dataset, but in an
+#   order compatible with the base model's convention.
+
+fine_tune  nep89_20250409.txt nep89_20250409.restart
+type       2  Mo  S
+# Descriptor — locked to base model
+version    4
+zbl        2
+cutoff     6 5
+n_max      4 4
+basis_size 8 8
+l_max      4 2 1
+neuron     80
+
+# Training control — adjustable
+lambda_1   0
+lambda_e   1.0
+lambda_f   1.0
+lambda_v   0.1
+batch      1000
+population 50
+generation 5000
