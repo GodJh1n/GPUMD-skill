@@ -9,7 +9,7 @@ compatibility: >
   Requires GPUMD and a potential stable for the target crystalline structure.
   For DOS workflows, also supports `compute_dos` from NVE trajectories.
 catalog-hidden: true
-license: LGPL-3.0-or-later
+license: GPL-3.0-only
 metadata:
   author: Codex
   version: 0.2.0

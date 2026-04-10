@@ -7,7 +7,7 @@ description: >
   or species-selective diffusion through group indices.
 compatibility: Requires GPUMD and a potential stable in the target fluid / ionic state.
 catalog-hidden: true
-license: LGPL-3.0-or-later
+license: GPL-3.0-only
 metadata:
   author: Codex
   version: 0.1.0

@@ -7,7 +7,7 @@ description: >
   existing `nep.txt` + `nep.restart`.
 compatibility: Requires an existing NEP model. True fine-tuning also requires the matching restart file.
 catalog-hidden: true
-license: LGPL-3.0-or-later
+license: GPL-3.0-only
 metadata:
   author: Codex
   version: 0.2.0

@@ -9,7 +9,7 @@ description: >
 compatibility: >
   Optional local checkouts of GPUMD, GPUMD-Tutorials, GPUMDkit, NepTrain,
   and NepTrainKit. If absent, use the bundled bootstrap script to clone them.
-license: LGPL-3.0-or-later
+license: GPL-3.0-only
 metadata:
   author: Codex
   version: 0.2.0

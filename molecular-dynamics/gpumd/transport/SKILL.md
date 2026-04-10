@@ -7,7 +7,7 @@ description: >
   transport-specific sampling and convergence guidance.
 compatibility: Requires GPUMD and a potential that is numerically stable in the target state.
 catalog-hidden: true
-license: LGPL-3.0-or-later
+license: GPL-3.0-only
 metadata:
   author: Codex
   version: 0.2.0

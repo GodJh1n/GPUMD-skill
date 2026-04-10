@@ -8,7 +8,7 @@ description: >
   rather than a single manual NEP fit.
 compatibility: Requires NepTrain (pip install neptrain) and/or NepTrainKit when those workflows are executed.
 catalog-hidden: true
-license: LGPL-3.0-or-later
+license: GPL-3.0-only
 metadata:
   author: Codex
   version: 0.2.0

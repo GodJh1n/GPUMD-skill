@@ -9,7 +9,7 @@ compatibility: >
   Requires GPUMD with the potentials needed for the target interface. Layered
   2D-material friction typically needs ILP or a NEP fit covering both layers.
 catalog-hidden: true
-license: LGPL-3.0-or-later
+license: GPL-3.0-only
 metadata:
   author: Codex
   version: 0.1.0

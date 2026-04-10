@@ -7,7 +7,7 @@ description: >
   (bulk, shear, Young's) from an NPT trajectory.
 compatibility: Requires GPUMD and a potential that is stable under the anisotropic NPT used for strain-fluctuation sampling.
 catalog-hidden: true
-license: LGPL-3.0-or-later
+license: GPL-3.0-only
 metadata:
   author: Codex
   version: 0.1.0

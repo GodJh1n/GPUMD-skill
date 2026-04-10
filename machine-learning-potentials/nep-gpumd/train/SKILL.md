@@ -8,7 +8,7 @@ description: >
   that DeePMD plays for LAMMPS.
 compatibility: Requires a NEP-capable GPUMD build with the `nep` executable and labeled training/test extxyz datasets.
 catalog-hidden: true
-license: LGPL-3.0-or-later
+license: GPL-3.0-only
 metadata:
   author: Codex
   version: 0.2.0

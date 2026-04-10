@@ -11,7 +11,7 @@ compatibility: >
   Requires a NEP-capable GPUMD build providing the `nep` executable (usually
   shipped together with `gpumd` in modern releases). Training needs labeled
   datasets in NEP-compatible extxyz format.
-license: LGPL-3.0-or-later
+license: GPL-3.0-only
 metadata:
   author: Codex
   version: 0.2.0

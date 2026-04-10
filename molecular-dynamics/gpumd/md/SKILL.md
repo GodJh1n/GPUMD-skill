@@ -8,7 +8,7 @@ description: >
   transport, diffusion, elastic, mechanics) have their own subskills.
 compatibility: Requires GPUMD and a valid potential file such as `nep.txt`, `nep89_*.txt`, Tersoff, or any other GPUMD-supported potential.
 catalog-hidden: true
-license: LGPL-3.0-or-later
+license: GPL-3.0-only
 metadata:
   author: Codex
   version: 0.2.0

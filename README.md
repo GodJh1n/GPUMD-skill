@@ -117,3 +117,8 @@ tools/gpumd-tools/
 - NepTrain (<https://github.com/aboys-cb/NepTrain>)
 - NepTrainKit (<https://github.com/aboys-cb/NepTrainKit>)
 - `computational-chemistry-agent-skills`
+
+## License
+
+This repository now includes the same license text used by the upstream GPUMD
+repository in [LICENCE](LICENCE): GNU General Public License version 3.

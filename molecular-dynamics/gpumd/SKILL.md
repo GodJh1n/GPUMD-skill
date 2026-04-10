@@ -11,7 +11,7 @@ compatibility: >
   Requires a runnable GPUMD environment. The user must supply the `gpumd`
   executable path, HPC module, or container entry point. A compatible potential
   file (`nep.txt`, `nep89_*.txt`, Tersoff, etc.) is required.
-license: LGPL-3.0-or-later
+license: GPL-3.0-only
 metadata:
   author: Codex
   version: 0.2.0
