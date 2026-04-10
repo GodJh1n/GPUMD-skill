@@ -7,7 +7,7 @@ ensemble    npt_scr 300 300 100 0 0 0 0 0 0 100 100 100 100 100 100 2000
 time_step   1
 dump_thermo 100
 
-# compute_elastic amplitude symmetry (cubic / hexagonal / tetragonal / orthorhombic)
-compute_elastic 0.01 cubic
+# compute_elastic <strain_value> — output written to elastic.out
+compute_elastic 0.01
 
 run         1100000

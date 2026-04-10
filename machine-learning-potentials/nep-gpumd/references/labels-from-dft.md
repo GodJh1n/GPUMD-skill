@@ -40,7 +40,9 @@ Third-party tools that also produce NEP extxyz:
 
 - **calorine** (Python): `calorine.tools.convert` for VASP, CP2K, QE
 - **ASE**: write extxyz from any ASE-supported calculator
-- **dpdata**: convert from DeePMD/VASP/CP2K to extxyz
+- **dpdata** (`dpdata-cli` skill): convert from DeePMD/VASP/CP2K/QE and
+  50+ other formats to extxyz. A convenient unified alternative to the
+  per-code GPUMD converters.
 
 ## 3. DFT workflow requirements
 

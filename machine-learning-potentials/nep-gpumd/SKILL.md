@@ -69,7 +69,12 @@ training one, route to `molecular-dynamics/gpumd` instead.
   different DFT labelers.
 - For auxiliary-property models (dipole, polarizability), state the
   `model_type` explicitly and remember that the loss structure is
-  different from the energy+force model.
+  different from the energy+force model. The dataset format also differs:
+  for `model_type 1` (dipole), each frame MUST include `dipole="dx dy dz"`
+  in the extxyz header (total cell dipole in e·Å); for `model_type 2`
+  (polarizability), each frame MUST include
+  `polarizability="xx yy zz xy yz zx"` (Voigt order, in Å³).
+  See [references/auxiliary-properties.md](references/auxiliary-properties.md).
 
 ## Where labeled data comes from
 
@@ -103,3 +108,4 @@ focused walkthrough.
 - Generating labeled DFT data → quantum-chemistry `dft-*` skills
 - Format conversion + dataset curation → `tools/gpumd-tools`
 - Frame selection / perturbation automation → `nep-gpumd/automation`
+- HPC job submission for NEP training → `dpdisp-submit`

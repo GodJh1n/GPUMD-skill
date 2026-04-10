@@ -37,7 +37,7 @@ velocity    300
 ensemble    npt_scr 300 300 100 0 0 0 0 0 0 100 100 100 100 100 100 2000
 time_step   1
 dump_thermo 100
-compute_elastic 0.01 cubic
+compute_elastic 0.01
 run         1100000
 ```
 
@@ -55,14 +55,16 @@ Using isotropic NPT makes the strain-fluctuation method blind to `C_44`.
 
 ### The `compute_elastic` keyword
 
-```
-compute_elastic amplitude symmetry
+```text
+compute_elastic <strain_value>
 ```
 
-- `amplitude` — strain scale used in the fluctuation estimator. `0.01` is a
-  robust starting value.
-- `symmetry` — `cubic`, `hexagonal`, `tetragonal`, or `orthorhombic`. The
-  symmetry label controls how many independent `C_ij` GPUMD fits.
+- `strain_value` — strain amplitude used in the fluctuation estimator. `0.01`
+  is a robust starting value.
+- Takes a single parameter. GPUMD computes the full 6x6 elastic tensor
+  automatically — the crystal symmetry determines how many independent
+  `C_ij` you should report, but it is not an argument to the keyword.
+- Output is written to `elastic.out`.
 
 ## 3. Supercell and length guidance
 

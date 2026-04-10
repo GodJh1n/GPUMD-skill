@@ -72,6 +72,12 @@ running MD with one, route to `machine-learning-potentials/nep-gpumd` instead.
   thickness convention before reporting bulk-like intensive quantities.
 - For restarts from another NEP or GPUMD version, re-check keyword syntax
   against the current docs at <https://gpumd.org/>.
+- **Group prerequisites**: several subskills (transport/SHC, mechanics,
+  diffusion/ionic conductivity) depend on group labels defined in
+  `model.xyz` via `group:I:M` columns in the `Properties` header. Before
+  dispatching to those subskills, confirm whether the user's `model.xyz`
+  already carries the required group definitions. Use the `add_groups` tool
+  from `tools/gpumd-tools` to add them if needed.
 
 ## Execution templates
 
@@ -131,3 +137,8 @@ This catches:
 - Need to generate labeled DFT data before training a NEP? → refer to the
   quantum-chemistry DFT skills (`dft-vasp`, `dft-cp2k`, `dft-qe`, `dft-siesta`,
   `dft-abinit`) for static/relax single-point workflows.
+- Need to submit GPUMD jobs to HPC queues (Slurm, PBS, LSF)? →
+  `dpdisp-submit` can manage job submission, monitoring, and auto-recovery.
+- Need to convert CIF / POSCAR / other crystal formats to `model.xyz`? →
+  `pymatgen-structure` can read and manipulate crystal structures, then
+  export to extxyz via ASE for use as GPUMD input.

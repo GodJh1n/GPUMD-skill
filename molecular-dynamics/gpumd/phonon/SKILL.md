@@ -150,6 +150,15 @@ the exact current meaning.
   [references/phonon-workflow.md](../references/phonon-workflow.md) and the
   external `25_lattice_dynamics_kappa` tutorial.
 
+## Cross-skill pointers
+
+- For downstream phonon analysis (phonon DOS, thermal properties,
+  band-structure plotting) beyond what GPUMD's `compute_phonon` provides
+  directly, consider the `phonopy` skill which handles finite-displacement
+  phonon workflows with force-constant post-processing.
+- GPUMD's force-constant output can serve as input for phonopy-based
+  analysis tools.
+
 ## Read first
 
 - [references/phonon-workflow.md](../references/phonon-workflow.md)

@@ -107,7 +107,7 @@ lambda_f     1.0
 lambda_v     0.1
 batch        1000
 population   50
-generation   5000
+generation   100000
 ```
 
 - `type 2 Si O`
@@ -126,9 +126,11 @@ generation   5000
 - `lambda_e`, `lambda_f`, `lambda_v`
   - Loss weights on energy / force / virial. Set `lambda_v 0` when the
     dataset has no virial labels or when the convention is uncertain.
-- `batch 1000`, `population 50`, `generation 5000`
-  - Training control. Increase `generation` for a final production fit
-    after hyperparameters are settled.
+- `batch 1000`, `population 50`, `generation 100000`
+  - Training control. `generation 5000` is only useful for a quick smoke
+    test — it is almost never enough for convergence. Production fits
+    typically need 50000–200000 generations. Start with 100000 and increase
+    if the `loss.out` curve has not plateaued.
 
 ### Step 3. Run training
 
@@ -160,6 +162,19 @@ Look at the final rows of `loss.out`:
   validation is dramatically worse, the dataset coverage or labeling is
   suspect
 - a good train parity with a bad test parity points to dataset gap
+
+Quantitative guidance for diagnosing overfitting:
+
+- If test RMSE is more than 2x the training RMSE for energy or force,
+  suspect overfitting or a train/test distribution mismatch.
+- If the loss curve shows training loss still decreasing but test loss
+  increasing or plateauing for more than ~10% of total generations,
+  training should be stopped or the model complexity reduced.
+- Compare force RMSE against the physical force scale: for a bulk solid
+  at equilibrium, force RMSE above 50 meV/Å typically indicates a problem;
+  for liquids or reactive systems, 100–200 meV/Å may be acceptable.
+- If energy RMSE per atom exceeds ~5 meV/atom for a well-behaved bulk
+  system, check dataset consistency before increasing model complexity.
 
 Compute parity metrics from the parity outputs:
 
@@ -217,7 +232,14 @@ full deployment workflow.
 | `batch`      | batch size                | `1000`               |
 | `population` | evolutionary population   | `50`                 |
 | `generation` | total generations         | `5000-200000`        |
-| `zbl`        | ZBL short-range cap      | `2` for reactive data |
+| `zbl`        | ZBL short-range cap      | `0`=off, `1`=flexible, `2`=fixed universal |
+
+**`zbl` values**: ZBL adds a universal repulsive core for close-range
+encounters. Use `0` (off) for well-sampled equilibrium systems. Use `1`
+for a flexible short-range correction fitted during training. Use `2` for
+the fixed Ziegler-Biersack-Littmark universal potential — recommended for
+reactive or radiation-damage datasets where atoms may approach very closely
+but training data may not fully cover those configurations.
 
 ## Conservative tuning order
 

@@ -67,7 +67,7 @@ against the current docs for the installed GPUMD version.
 | `compute_msd`      | mean-square displacement                        |
 | `compute_sdc`      | self-diffusion coefficient from VAC             |
 | `compute_viscosity`| Green-Kubo shear viscosity                      |
-| `compute_elastic`  | elastic constants via strain fluctuation        |
+| `compute_elastic`  | elastic constants via strain fluctuation → `elastic.out` |
 | `compute`          | general per-group observables                   |
 
 ## Group-based controls

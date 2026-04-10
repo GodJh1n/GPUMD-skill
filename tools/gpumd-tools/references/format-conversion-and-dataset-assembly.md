@@ -30,6 +30,19 @@ The important point is not the filename but the header semantics:
 | SIESTA | `GPUMD/tools/Format_Conversion/siesta2xyz` |
 | DeepMD datasets | `GPUMD/tools/Format_Conversion/dp2xyz` |
 
+### Alternative: `dpdata-cli`
+
+`dpdata` (`dpdata-cli` skill) is a widely-used alternative for format
+conversion. It supports reading from VASP, CP2K, QE, DeepMD, and 50+
+other formats, and can export to extxyz via `System.to('extxyz')`. Use
+alongside or instead of the native GPUMD converters when dpdata is
+already in the workflow.
+
+**Note**: verify the virial sign convention after dpdata conversion —
+VASP stress is −virial/V, and while dpdata handles the conversion, the
+result should be cross-checked against a known simple system before
+training.
+
 ## 3. Practical conversion rules
 
 Before trusting a converted dataset:

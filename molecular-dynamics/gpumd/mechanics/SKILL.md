@@ -12,7 +12,7 @@ catalog-hidden: true
 license: GPL-3.0-only
 metadata:
   author: Jhin
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # GPUMD Mechanics

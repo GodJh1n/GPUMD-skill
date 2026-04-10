@@ -10,7 +10,7 @@ catalog-hidden: true
 license: GPL-3.0-only
 metadata:
   author: Jhin
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # GPUMD Diffusion, Viscosity, Ionic Conductivity
@@ -175,6 +175,14 @@ Read when needed:
 2. an extraction recipe for `msd.out`, `sdc.out`, or `viscosity.out`
 3. the convergence and uncertainty discussion
 4. (ionic) group definition and Nernst-Einstein post-processing
+
+## Cross-skill pointers
+
+- For generating initial configurations of liquid or molten systems
+  (mixtures, melts, solutions), use `packmol-generate-mixture` to pack
+  molecules into a simulation box before converting to `model.xyz`.
+- For structure manipulation (supercells, substitutions) →
+  `pymatgen-structure`.
 
 ## References
 

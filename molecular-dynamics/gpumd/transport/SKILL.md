@@ -25,7 +25,7 @@ viscosity, and ionic conductivity are related observables but live in
 | ---------------------------------------------- | ---------------------- | ------------------ |
 | bulk κ in a single-component crystal / liquid  | HNEMD                  | `compute_hnemd`    |
 | bulk κ via Green-Kubo                          | EMD                    | `compute_hac`      |
-| length dependence or interface κ               | NEMD                   | see docs           |
+| length dependence or interface κ               | NEMD                   | not yet covered    |
 | spectral decomposition of κ                    | spectral heat current  | `compute_shc`      |
 | multi-component coupled transport              | HNEMDEC                | `compute_hnemdec`  |
 
@@ -72,7 +72,7 @@ run         2000000
 
 - `compute_hac sample_interval Nc output_interval`
   - `sample_interval` — store heat-current samples every N steps
-  - `Nc` — number of correlation points retained in `hac.out`
+  - `Nc` — maximum number of correlation time steps to be calculated
   - `output_interval` — how often the running integral is written
 
 Inspect `hac.out` and the running integral of the correlation function, not
@@ -107,8 +107,21 @@ run         1000000
 Post-process with the bundled helper:
 
 ```bash
-python scripts/average_hnemd_kappa.py kappa.out --discard-frac 0.2
+python scripts/average_hnemd_kappa.py kappa.out
 ```
+
+Do not blindly discard a fixed fraction of the time series. Instead,
+inspect the `kappa.out` running average to identify when it has
+equilibrated, then use `--discard-rows N` with N chosen from that
+inspection.
+
+### Step 3.5. NEMD (stub)
+
+NEMD workflows for length-dependent or interface thermal conductivity are
+supported by GPUMD but not yet covered in this skill. Refer directly to:
+
+- GPUMD documentation: <https://gpumd.org/gpumd/input_parameters/index.html>
+- Tutorial examples: `07_Carbon_thermal_conductivity_NEMD`
 
 ### Step 4. SHC / spectral decomposition
 

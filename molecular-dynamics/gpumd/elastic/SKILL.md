@@ -2,15 +2,14 @@
 name: elastic
 description: >
   Prepare GPUMD elastic-constant calculations using the strain-fluctuation
-  method. Use when the user needs `compute_elastic`, `C_ij` extraction for
-  cubic / hexagonal / tetragonal / orthorhombic systems, or elastic moduli
-  (bulk, shear, Young's) from an NPT trajectory.
+  method. Use when the user needs `compute_elastic`, the full `C_ij` tensor,
+  or elastic moduli (bulk, shear, Young's) from an anisotropic NPT trajectory.
 compatibility: Requires GPUMD and a potential that is stable under the anisotropic NPT used for strain-fluctuation sampling.
 catalog-hidden: true
 license: GPL-3.0-only
 metadata:
   author: Jhin
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # GPUMD Elastic Constants
@@ -24,14 +23,15 @@ the box-shape fluctuations without a finite-difference stress sweep.
 
 ```bash
 gpumd < run.in | tee gpumd.log
-python scripts/parse_thermo.py thermo.out --last 1
+cat elastic.out
 ```
 
 ## Agent responsibilities
 
 1. Confirm the crystal symmetry (cubic, hexagonal, tetragonal, orthorhombic).
-   The symmetry label is an argument to `compute_elastic` and changes how
-   many independent `C_ij` are extracted.
+   The symmetry is NOT an argument to `compute_elastic` — GPUMD computes the
+   full 6x6 tensor automatically. Symmetry matters for **interpreting** how
+   many independent `C_ij` the user should report.
 2. Confirm the structure is relaxed under the chosen potential. Unrelaxed
    inputs produce biased `C_ij`.
 3. Use an anisotropic NPT barostat (e.g. `npt_scr` with separate diagonal
@@ -63,7 +63,7 @@ velocity    300
 ensemble    npt_scr 300 300 100 0 0 0 0 0 0 100 100 100 100 100 100 2000
 time_step   1
 dump_thermo 100
-compute_elastic 0.01 cubic
+compute_elastic 0.01
 run         1100000
 ```
 
@@ -73,24 +73,25 @@ run         1100000
     parameters is what makes the barostat anisotropic. All six diagonal
     compressibilities (`C_xx ... C_yz`) must be nonzero so that the box
     shape is free to fluctuate.
-- `compute_elastic amplitude symmetry`
-  - `amplitude` — strain scale used in the fluctuation estimator (0.01 is a
-    robust default)
-  - `symmetry` — one of `cubic`, `hexagonal`, `tetragonal`, `orthorhombic`
+- `compute_elastic <strain_value>`
+  - Takes a single parameter: the strain amplitude used in the fluctuation
+    estimator. `0.01` is a robust starting value.
+  - Output is written to `elastic.out`.
 - `run 1100000`
   - Long trajectories are required. 10^6 steps is a practical minimum.
 
 ### Step 3. Extract `C_ij`
 
-At the end of the run, GPUMD prints the fitted elastic constants to
-`thermo.out` / the main log. Read them with:
+At the end of the run, GPUMD writes the elastic constants to `elastic.out`.
+Read them directly or parse with a simple script:
 
 ```bash
-python scripts/parse_thermo.py thermo.out --last 1
+cat elastic.out
 ```
 
-For cubic crystals the report should contain `C_11`, `C_12`, `C_44`. Derive
-isotropic moduli via the Voigt-Reuss-Hill average if requested by the user.
+The output contains the full 6x6 elastic tensor. For cubic crystals the
+independent constants are `C_11`, `C_12`, `C_44`. Derive isotropic moduli
+via the Voigt-Reuss-Hill average if requested by the user.
 
 ### Step 4. Convergence
 
