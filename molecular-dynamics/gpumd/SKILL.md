@@ -57,7 +57,7 @@ running MD with one, route to `machine-learning-potentials/nep-gpumd` instead.
    them. Keep the example readable and explain every block.
 5. Validate structures before trusting downstream runs:
    ```bash
-   python ../../tools/gpumd-tools/scripts/validate_extxyz_headers.py model.xyz --mode model
+   python scripts/validate_extxyz_headers.py model.xyz --mode model
    ```
 6. Report clearly which command was run, which files were used, where outputs
    were written, and which sanity checks should be performed next.

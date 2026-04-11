@@ -37,7 +37,7 @@ gpumd < run.in | tee gpumd.log
 2. Write `run.in` yourself instead of asking the user to hand-write it.
 3. Validate the structure file before running:
    ```bash
-   python ../../../tools/gpumd-tools/scripts/validate_extxyz_headers.py model.xyz --mode model
+   python ../scripts/validate_extxyz_headers.py model.xyz --mode model
    ```
 4. Always propose a short smoke test (`run 100`) before the production segment
    to catch missing files, bad species order, or unstable dynamics.
@@ -65,7 +65,7 @@ Key rules:
 - `pbc` must match the physics (`T T T` bulk, `T T F` 2D monolayer, …)
 - species order must be consistent with the potential file
 
-Use `../../../tools/gpumd-tools/scripts/validate_extxyz_headers.py --mode model` before trusting the file.
+Use `../scripts/validate_extxyz_headers.py --mode model` before trusting the file.
 
 ### Step 2. Write `run.in`
 
@@ -229,7 +229,7 @@ Read when needed:
 
 ## Bundled helpers
 
-- [validate_extxyz_headers.py](../../../tools/gpumd-tools/scripts/validate_extxyz_headers.py)
+- [validate_extxyz_headers.py](../scripts/validate_extxyz_headers.py)
 - [scripts/parse_thermo.py](../scripts/parse_thermo.py)
 
 ## Expected output

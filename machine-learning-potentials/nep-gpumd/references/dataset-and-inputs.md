@@ -110,8 +110,8 @@ A training dataset should cover the states that matter downstream:
 Use the bundled checker before training:
 
 ```bash
-python tools/gpumd-tools/scripts/validate_extxyz_headers.py train.xyz --mode train
-python tools/gpumd-tools/scripts/validate_extxyz_headers.py test.xyz --mode train
+python scripts/validate_extxyz_headers.py train.xyz --mode train
+python scripts/validate_extxyz_headers.py test.xyz --mode train
 ```
 
 This catches:

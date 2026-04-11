@@ -106,11 +106,9 @@ python scripts/validate_extxyz_headers.py all.xyz --mode train
 
 ### Step 3. Split train/test
 
-```bash
-python scripts/split_train_test.py all.xyz --ratio 0.9 --seed 42
-```
-
-(The `split_train_test.py` script is in the NEP skill's `scripts/` dir.)
+Train/test splitting is handled by the `nep-gpumd/train` skill's bundled
+helper (`machine-learning-potentials/nep-gpumd/scripts/split_train_test.py`),
+or by equivalent local tools such as `calorine` or a simple Python split.
 
 ### Step 4. Inspect distribution
 
