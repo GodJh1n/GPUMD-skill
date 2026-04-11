@@ -160,6 +160,19 @@ Provide:
 1. explicit assumptions and unresolved choices
 1. next-step suggestion when user wants downstream DFT/MD submission
 
+## GPUMD integration
+
+pymatgen is useful for preparing GPUMD `model.xyz` input structures:
+
+- **CIF/POSCAR → model.xyz**: read with pymatgen, build supercell, then
+  export to extxyz via ASE for use as GPUMD input.
+- **Supercell construction**: GPUMD phonon and transport workflows
+  require supercells; use pymatgen's scaling matrix to build them.
+- **Symmetry analysis**: confirm crystal symmetry before choosing GPUMD
+  elastic constant interpretation or phonon k-path.
+- **Site substitution**: for doped systems or solid solutions, create
+  substituted structures before generating NEP training data.
+
 ## Common failure points
 
 - unreadable input file or ambiguous format

@@ -274,6 +274,12 @@ When using this skill for users:
 1. If debugging is needed, enable full traceback:
    - `RDKIT_CONF_HELPER_TRACE=1 uv run <skill_path>/scripts/rdkit_conf_helper.py ...`
 
+## GPUMD integration
+
+RDKit conformer generation can produce initial molecular geometries for
+Packmol packing or as starting structures for GPUMD molecular simulations.
+XYZ output can be converted to GPUMD `model.xyz` format via dpdata or ASE.
+
 ## References
 
 - RDKit conformer generation guide: https://www.rdkit.org/docs/GettingStartedInPython.html#working-with-3d-molecules

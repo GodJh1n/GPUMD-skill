@@ -151,6 +151,18 @@ For normal runs, make outputs predictable and easy to inspect:
 - Stop and ask if atom-type inference is ambiguous.
 - Do not invent unsupported flags; use the official CLI definitions from [references/cli.md](references/cli.md).
 
+## GPUMD integration
+
+GPUMD reactive MD trajectories can be analyzed with ReacNetGenerator by
+first converting `movie.xyz` (GPUMD dump output) to a format
+ReacNetGenerator accepts:
+
+- GPUMD `movie.xyz` is standard extxyz and can be used directly as
+  `extxyz` input type.
+- For NEP-driven reactive simulations (e.g. combustion, pyrolysis),
+  ensure the NEP potential was trained with `zbl 1` or `zbl 2` so that
+  close-range encounters are physically meaningful.
+
 ## Quick references
 
 - Official CLI coverage: [references/cli.md](references/cli.md)

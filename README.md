@@ -15,11 +15,15 @@ It follows the same basic architecture as
 
 ## Install the skills
 
-You only need to install the **three top-level skills** in this repository:
+The **core GPUMD/NEP skills** are:
 
 - `molecular-dynamics/gpumd`
 - `machine-learning-potentials/nep-gpumd`
 - `tools/gpumd-tools`
+
+**Companion skills** (DFT labeling, phonon analysis, data processing, HPC
+submission, workflow orchestration) are available in their respective
+directories and can be installed individually as needed.
 
 ### Option 1: clone the repository
 
@@ -36,12 +40,37 @@ cd GPUMD-skill
 
 ### Install into OpenClaw / skills runtime
 
-From the repository root, run:
+From the repository root, install the core skills:
 
 ```bash
 npx -y skills add ./molecular-dynamics/gpumd -a openclaw -y
 npx -y skills add ./machine-learning-potentials/nep-gpumd -a openclaw -y
 npx -y skills add ./tools/gpumd-tools -a openclaw -y
+```
+
+Install companion skills as needed:
+
+```bash
+# DFT labeling
+npx -y skills add ./quantum-chemistry/dft-vasp -a openclaw -y
+npx -y skills add ./quantum-chemistry/dft-cp2k -a openclaw -y
+npx -y skills add ./quantum-chemistry/dft-qe -a openclaw -y
+npx -y skills add ./quantum-chemistry/dft-siesta -a openclaw -y
+npx -y skills add ./quantum-chemistry/dft-abinit -a openclaw -y
+# Analysis
+npx -y skills add ./analysis/phonopy -a openclaw -y
+npx -y skills add ./analysis/reacnetgenerator -a openclaw -y
+# Data processing
+npx -y skills add ./data-processing/dpdata-cli -a openclaw -y
+npx -y skills add ./data-processing/pymatgen-structure -a openclaw -y
+npx -y skills add ./data-processing/openbabel -a openclaw -y
+npx -y skills add ./data-processing/packmol-generate-mixture -a openclaw -y
+npx -y skills add ./data-processing/rdkit-conf -a openclaw -y
+# Tools
+npx -y skills add ./tools/dpdisp-submit -a openclaw -y
+npx -y skills add ./tools/search-species -a openclaw -y
+# Workflow orchestration
+npx -y skills add ./agent-workflow/agent-taskboard-manifest -a openclaw -y
 ```
 
 Notes:
@@ -73,6 +102,9 @@ repository folder.
 - `Prepare a baseline NEP4 training workflow from train.xyz and test.xyz, then explain which nep.in parameters matter first.`
 - `Evaluate whether NEP89 is good enough for MoS2 thermal conductivity before fine-tuning.`
 - `Convert VASP outputs to NEP-compatible extxyz and tell me whether the virial convention is safe to mix with my current dataset.`
+- `Set up a VASP static single-point calculation for labeling NEP training frames, then submit it to my Slurm cluster.`
+- `Use phonopy with finite displacements to compute the phonon band structure of BN, then compare with GPUMD compute_phonon.`
+- `Pack 100 water and 50 ethanol molecules with Packmol, convert to model.xyz, and prepare a GPUMD diffusion workflow.`
 
 ### Optional: bootstrap local upstream tool sources
 
@@ -115,40 +147,102 @@ above, not the mirrored upstream repositories.
 | [fine-tune](machine-learning-potentials/nep-gpumd/fine-tune/SKILL.md) | Prepare NEP prediction and fine-tuning workflows from an existing model or foundation model such as NEP89. Use when the user wants out-of-the-box evaluation, targeted MD sampling, `prediction 1`, or `fine_tune` from an existing `nep.txt` + `nep.restart`. | 0.2.0 | Requires an existing NEP model. True fine-tuning also requires the matching restart file. |
 | [automation](machine-learning-potentials/nep-gpumd/automation/SKILL.md) | Prepare dataset-curation and active-learning workflows around NepTrain and NepTrainKit. Use when the user needs perturbation-based sampling, representative-structure selection (FPS / max-min), automated NEP project scaffolding, interactive outlier inspection, or iterative retrain loops rather than a single manual NEP fit. | 0.2.0 | Requires NepTrain (`pip install neptrain`) and/or NepTrainKit when those workflows are executed. |
 
+### DFT skills (quantum-chemistry)
+
+| Skill | Description | Subskills |
+| --- | --- | --- |
+| [dft-vasp](quantum-chemistry/dft-vasp/SKILL.md) | Route VASP DFT requests to task-specific subskills. Use for single-point labeling, relaxation, DOS, or band-structure preparation. | static, relax, dos, band |
+| [dft-cp2k](quantum-chemistry/dft-cp2k/SKILL.md) | Route CP2K requests to task-specific subskills. | static, relax, md, electronic |
+| [dft-qe](quantum-chemistry/dft-qe/SKILL.md) | Generate Quantum ESPRESSO DFT input tasks (SCF, relax, vc-relax, MD, bands, DOS, phonons). | — |
+| [dft-siesta](quantum-chemistry/dft-siesta/SKILL.md) | Route SIESTA requests to task-specific subskills. | static, relax, md, electronic |
+| [dft-abinit](quantum-chemistry/dft-abinit/SKILL.md) | Route ABINIT requests to task-specific subskills. | static, relax, md, electronic |
+
+### Analysis skills
+
+| Skill | Description |
+| --- | --- |
+| [phonopy](analysis/phonopy/SKILL.md) | Backend-agnostic phonon workflow orchestration: finite-displacement, force constants, band structure, DOS, thermal properties. |
+| [reacnetgenerator](analysis/reacnetgenerator/SKILL.md) | Run ReacNetGenerator on reactive MD trajectories to generate reaction networks and reports. |
+
+### Data-processing skills
+
+| Skill | Description |
+| --- | --- |
+| [dpdata-cli](data-processing/dpdata-cli/SKILL.md) | CLI utility for converting 50+ atomic simulation formats (VASP, LAMMPS, QE, CP2K, extxyz, etc.). |
+| [pymatgen-structure](data-processing/pymatgen-structure/SKILL.md) | Structure manipulation and crystal analysis: format conversion, supercells, substitution, symmetry. |
+| [openbabel](data-processing/openbabel/SKILL.md) | Molecular file format conversion, SMILES-to-3D, and 2D structure rendering. |
+| [packmol-generate-mixture](data-processing/packmol-generate-mixture/SKILL.md) | Generate packed molecular configurations for liquid / mixture simulations. |
+| [rdkit-conf](data-processing/rdkit-conf/SKILL.md) | RDKit 3D/2D conformer generation from SMILES datasets. |
+
+### Additional tools
+
+| Skill | Description |
+| --- | --- |
+| [dpdisp-submit](tools/dpdisp-submit/SKILL.md) | Submit computational jobs to HPC clusters (Slurm, PBS, LSF) via DPDispatcher. |
+| [search-species](tools/search-species/SKILL.md) | Retrieve chemical structural data (SMILES, formula, mass, 2D images) via names. |
+
+### Workflow orchestration
+
+| Skill | Description |
+| --- | --- |
+| [agent-taskboard-manifest](agent-workflow/agent-taskboard-manifest/SKILL.md) | Semantic workflow specification for agents: planning, generation, formalization, and execution of complex tasks. |
+
 ## File tree overview
 
 ```text
-molecular-dynamics/gpumd/
-├── SKILL.md                    # router
-├── md/SKILL.md                 # general MD
-├── phonon/SKILL.md             # phonon
-├── transport/SKILL.md          # thermal transport
-├── diffusion/SKILL.md          # diffusion / viscosity
-├── elastic/SKILL.md            # elastic constants
-├── mechanics/SKILL.md          # friction / deposition
-├── references/                 # detailed workflow notes
-├── assets/examples/            # run.in + model.xyz templates
-└── scripts/                    # deterministic helpers
+molecular-dynamics/gpumd/          # core GPUMD MD skills
+├── SKILL.md                       # router
+├── md/SKILL.md                    # general MD
+├── phonon/SKILL.md                # phonon
+├── transport/SKILL.md             # thermal transport
+├── diffusion/SKILL.md             # diffusion / viscosity
+├── elastic/SKILL.md               # elastic constants
+├── mechanics/SKILL.md             # friction / deposition
+├── references/                    # detailed workflow notes
+├── assets/examples/               # run.in + model.xyz templates
+└── scripts/                       # deterministic helpers
 
-machine-learning-potentials/nep-gpumd/
-├── SKILL.md                    # router
-├── train/SKILL.md              # baseline training
-├── fine-tune/SKILL.md          # prediction + fine-tune
-├── automation/SKILL.md         # NepTrain / NepTrainKit
-├── references/                 # dataset + fitting notes
-├── assets/examples/            # nep.in + extxyz templates
-└── scripts/                    # deterministic helpers
+machine-learning-potentials/nep-gpumd/  # core NEP skills
+├── SKILL.md                       # router
+├── train/SKILL.md                 # baseline training
+├── fine-tune/SKILL.md             # prediction + fine-tune
+├── automation/SKILL.md            # NepTrain / NepTrainKit
+├── references/                    # dataset + fitting notes
+├── assets/examples/               # nep.in + extxyz templates
+└── scripts/                       # deterministic helpers
 
-tools/gpumd-tools/
-├── SKILL.md                    # tooling router
-├── references/                 # converter + tutorial map
-└── scripts/                    # bootstrap + local indexing
+quantum-chemistry/                 # DFT labeling for NEP
+├── dft-vasp/                      # VASP router + static/relax/dos/band
+├── dft-cp2k/                      # CP2K router + static/relax/md/electronic
+├── dft-qe/                        # QE (single skill)
+├── dft-siesta/                    # SIESTA router + subskills
+└── dft-abinit/                    # ABINIT router + subskills
+
+analysis/                          # phonon + post-processing
+├── phonopy/                       # phonon workflows
+└── reacnetgenerator/              # reactive MD analysis
+
+data-processing/                   # format conversion + structure prep
+├── dpdata-cli/                    # 50+ format converter
+├── pymatgen-structure/            # crystal structure manipulation
+├── openbabel/                     # molecular format conversion
+├── packmol-generate-mixture/      # liquid packing
+└── rdkit-conf/                    # conformer generation
+
+tools/                             # utilities
+├── gpumd-tools/                   # GPUMD-specific tooling
+├── dpdisp-submit/                 # HPC job submission
+└── search-species/                # chemical data lookup
+
+agent-workflow/                    # workflow orchestration
+└── agent-taskboard-manifest/      # semantic workflow spec
 ```
 
 ## Design choices
 
-- The old monolithic GPUMD+NEP skill was split by workflow boundary instead of
-  by software name alone.
+- The core GPUMD+NEP skills are split by workflow boundary.
+- Companion skills (DFT, phonon, data processing, HPC submission) are adapted
+  from `computational-chemistry-agent-skills` with GPUMD integration notes.
 - Large upstream example repositories are treated as references, not vendored
   wholesale into the installable skill tree.
 - Only small, high-reuse templates are bundled into `assets/examples/`.
@@ -156,6 +250,9 @@ tools/gpumd-tools/
   `tools/gpumd-tools/scripts/bootstrap_gpumd_tool_sources.sh`.
 - Each subskill follows the same pattern: agent checklist, annotated workflow,
   bundled templates, references, and expected output.
+- Repository engineering (`.schema/`, `.scripts/`, `.pre-commit-config.yaml`)
+  is adapted from `computational-chemistry-agent-skills` for frontmatter
+  validation and README generation.
 
 ## Reference sources
 
@@ -164,7 +261,7 @@ tools/gpumd-tools/
 - GPUMD-Tutorials (<https://github.com/brucefan1983/GPUMD-Tutorials>)
 - NepTrain (<https://github.com/aboys-cb/NepTrain>)
 - NepTrainKit (<https://github.com/aboys-cb/NepTrainKit>)
-- `computational-chemistry-agent-skills`
+- `computational-chemistry-agent-skills` (<https://github.com/deepmodeling/computational-chemistry-agent-skills>)
 
 ## License
 

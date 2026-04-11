@@ -183,6 +183,24 @@ Formats may be updated. For the complete and latest list, see:
 1. **Multi-system**: Use `--multi` for directories containing multiple systems
 1. **Compressed output**: Use `deepmd/npy` or `deepmd/hdf5` for smaller file sizes
 
+## GPUMD / NEP integration
+
+dpdata natively supports `gpumd/xyz` and `extxyz` formats. Key workflows:
+
+- **DFT → NEP training data**:
+  ```bash
+  uvx dpdata OUTCAR -i vasp/outcar -O train.xyz -o extxyz
+  ```
+- **GPUMD trajectory conversion**:
+  ```bash
+  uvx dpdata movie.xyz -i extxyz -O output.data -o lammps/lmp
+  ```
+- **Virial convention warning**: after conversion to extxyz, verify the
+  virial sign matches the NEP convention (total cell virial in eV)
+  before training.
+- **Species ordering**: the `-t` type-map flag controls element order.
+  Ensure this matches the `type` line in `nep.in`.
+
 ## References
 
 - [dpdata Documentation](https://docs.deepmodeling.com/projects/dpdata/)

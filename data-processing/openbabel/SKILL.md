@@ -120,6 +120,13 @@ When using this skill for users:
 1. For Gaussian workflows, verify route section and resource lines (`%nproc`, method/basis) after generation.
 1. Use `uvx --from openbabel-wheel obabel ...` consistently to minimize local dependency setup.
 
+## GPUMD integration
+
+Open Babel can generate 3D molecular geometries from SMILES for use as
+input to Packmol or as single-molecule starting structures for GPUMD
+liquid / molecular simulations. Convert the output to extxyz with dpdata
+or ASE before using as GPUMD `model.xyz`.
+
 ## References
 
 - Open Babel project: https://openbabel.org/

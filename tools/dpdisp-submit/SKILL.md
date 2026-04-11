@@ -197,3 +197,19 @@ uvx --with dpdispatcher dargs check --allow-ref -f dpdispatcher.entrypoints.subm
 tmux new-session -d -s dpdisp_task02 "uvx --from dpdispatcher dpdisp submit --allow-ref submis_task02.json"
 tmux ls
 ```
+
+## GPUMD / NEP integration
+
+dpdisp-submit is the recommended way to submit GPUMD and NEP training
+jobs to HPC clusters:
+
+- **GPUMD MD jobs**: submit `gpumd` with `forward_files` containing
+  `run.in`, `model.xyz`, and the potential file (`nep.txt`).
+- **NEP training jobs**: submit `nep` with `forward_files` containing
+  `nep.in`, `train.xyz`, `test.xyz`, and optionally `nep.restart`.
+- **GPU resources**: set `gpu_per_node` in the `resources` block.
+  GPUMD and NEP training are GPU-accelerated codes.
+- **Backward files**: for GPUMD, retrieve `thermo.out`, `movie.xyz`,
+  and observable-specific outputs (`kappa.out`, `msd.out`, etc.).
+  For NEP, retrieve `nep.txt`, `nep.restart`, `loss.out`, and parity
+  files.

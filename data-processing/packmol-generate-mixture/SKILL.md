@@ -139,6 +139,20 @@ The run should produce (within `output_dir`):
 - `${system_name}.xyz` (packed XYZ output; name may include `_packed` suffix)
 - `packmol.out` (stdout log; capture with `tee`)
 
+## GPUMD integration
+
+Packmol output is the starting point for GPUMD liquid / mixture
+simulations:
+
+- Convert the packed XYZ to GPUMD `model.xyz` format (add `Lattice`,
+  `Properties`, and `pbc` headers).
+- Use dpdata or ASE for the conversion:
+  ```bash
+  uvx dpdata packed.xyz -i xyz -O model.xyz -o extxyz
+  ```
+- The packed structure must be equilibrated (NPT → NVE) in GPUMD before
+  production sampling for diffusion, viscosity, or ionic conductivity.
+
 ## Limitations (be explicit)
 
 - Packed XYZ has coordinates only; **no topology**, **no force-field types**, **no LAMMPS data**.

@@ -92,6 +92,13 @@ When using this toolkit for users, ensure you cross-check these points with the 
 - **Fallback:** If `pubchem` fails on a systematic name, fallback to `opsin`.
 - **Quoting:** Always wrap the chemical `<query>` in quotes.
 
+## GPUMD integration
+
+Use search-species to look up molecular SMILES before generating 3D
+structures with openbabel or rdkit-conf for Packmol packing into GPUMD
+liquid simulations. Also useful for verifying species identities when
+building multi-component NEP training datasets.
+
 ## References
 
 - Engine Details & Limitations: `reference/backends.md`
