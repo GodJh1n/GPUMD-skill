@@ -1,0 +1,9 @@
+timestamp	commit	skill	old_score	new_score	status	dimension	note	eval_mode
+2026-04-16T10:40	baseline	dft-vasp/static	-	82.3	baseline	-	fcc Si SCF, E0=-4.89eV verified	full_test
+2026-04-16T10:40	baseline	dft-vasp/relax	-	84.8	baseline	-	fcc Si relax, V=14.5A3 verified	full_test
+2026-04-16T10:40	baseline	dft-vasp/dos	-	86.0	baseline	-	fcc Si DOS, Ef drift 207meV documented	full_test
+2026-04-16T10:40	baseline	dft-vasp/band	-	85.5	baseline	-	fcc Si band, NBANDS=8 verified	full_test
+2026-04-16T10:40	baseline	dft-cp2k/static	-	83.3	baseline	-	H2O SCF, E=-17.2196Ha verified	full_test
+2026-04-16T10:40	baseline	dft-qe	-	83.8	baseline	-	Si SCF, E=-93.450Ry verified	full_test
+2026-04-16T10:40	baseline	dft-abacus/static	-	86.3	baseline	-	Si2 LCAO, E=-213.665eV verified	full_test
+2026-04-16T10:40	baseline	dft-abacus (router)	-	59.4	baseline	-	Minimal router, only static leaf exists	dry_run
