@@ -204,6 +204,162 @@ potential nep.txt
 That's it at the syntax level — but see the GPUMD `md` subskill for the
 full deployment workflow.
 
+## Runtime-verified end-to-end example — PbTe (DFT → NEP)
+
+This complete pipeline was **runtime-verified** on 2026-04-16 using a
+250-atom PbTe supercell from [GPUMD tutorial 11_NEP_potential_PbTe](https://gpumd.org/tutorials/nep_potential_PbTe.html).
+It demonstrates the full DFT → format conversion → NEP training → loss
+plotting workflow.
+
+### Overview
+
+```text
+train.xyz (GPUMD tutorial)
+    │
+    ▼  ASE: extract 1 frame, strip labels
+POSCAR (250 atoms, Pb₁₂₅Te₁₂₅)
+    │
+    ▼  vaspkit: KPOINTS + POTCAR
+    ▼  VASP static SCF (16 cores)
+OUTCAR (E = −919.06 eV, forces, stress)
+    │
+    ▼  dpdata: vasp/outcar → extxyz
+train.xyz (1 frame, energy + forces + virial)
+    │
+    ▼  nep (GPU, 2000 generations)
+nep.txt + loss.out
+    │
+    ▼  matplotlib
+loss_plot.png
+```
+
+### Step 1: Extract structure
+
+```python
+from ase.io import read, write
+atoms = read('path/to/gpumd/train.xyz', index=0, format='extxyz')
+atoms.calc = None; atoms.info = {}
+atoms.arrays = {k: v for k, v in atoms.arrays.items()
+                if k in ('numbers', 'positions')}
+atoms = atoms[atoms.numbers.argsort()]
+write('POSCAR', atoms, format='vasp', vasp5=True, sort=True)
+```
+
+### Step 2: VASP static SCF
+
+Generate inputs via vaspkit:
+
+```bash
+echo -e "102\n1\n0.04" | vaspkit   # → KPOINTS (Γ-only) + POTCAR (Pb_d + Te)
+```
+
+INCAR (low-precision test):
+
+```text
+SYSTEM = PbTe pipeline test
+ISTART = 0; ICHARG = 2
+ENCUT  = 300          # above Pb_d ENMAX=237.8
+PREC   = Normal; LREAL = Auto; EDIFF = 1E-4
+NELM   = 40; ISMEAR = 0; SIGMA = 0.1
+LWAVE = .FALSE.; LCHARG = .FALSE.; NCORE = 4
+```
+
+```bash
+OMP_NUM_THREADS=1 mpirun -np 16 vasp_std > vasp.out 2> vasp.err
+```
+
+**Result**: converged in **15 DAV steps**, E = **−919.062 eV** (−3.676 eV/atom).
+
+### Step 3: Convert to extxyz
+
+```python
+import dpdata
+ds = dpdata.LabeledSystem('OUTCAR', fmt='vasp/outcar')
+ds.to('extxyz', 'train.xyz')
+# → 1 frame, 250 atoms, energy + forces + virial
+```
+
+### Step 4: NEP training
+
+`nep.in`:
+
+```text
+type          2 Pb Te
+version       4
+cutoff        8 4
+n_max         4 4
+basis_size    8 8
+l_max         4 2 0
+neuron        30
+generation    2000
+batch         1000
+population    50
+lambda_e      1.0
+lambda_f      1.0
+lambda_v      0.1
+```
+
+```bash
+nep    # reads nep.in + train.xyz, writes nep.txt + loss.out
+```
+
+**Result** (RTX 4090, 35.4 s):
+
+| Metric | Value |
+|--------|-------|
+| Total loss | 0.137 |
+| Energy RMSE | 0.000 eV/atom (1 frame → perfect fit) |
+| Force RMSE | 0.068 eV/Å |
+| L1 regularization | 0.028 |
+| L2 regularization | 0.036 |
+
+### Step 5: Plot loss curve
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+data = np.loadtxt('loss.out')
+gen = data[:, 0]
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 9))
+fig.suptitle('NEP Training Loss')
+
+axes[0,0].semilogy(gen, data[:,1], 'b-'); axes[0,0].set_title('Total Loss')
+axes[0,1].semilogy(gen, data[:,4], 'r-'); axes[0,1].set_title('Energy RMSE')
+axes[1,0].semilogy(gen, data[:,5], 'g-'); axes[1,0].set_title('Force RMSE')
+axes[1,1].semilogy(gen, data[:,2], 'm-', label='L1')
+axes[1,1].semilogy(gen, data[:,3], 'c-', label='L2')
+axes[1,1].set_title('Regularization'); axes[1,1].legend()
+
+for ax in axes.flat:
+    ax.set_xlabel('Generation'); ax.grid(True, alpha=0.3)
+plt.tight_layout(); plt.savefig('loss_plot.png', dpi=150)
+```
+
+### loss.out column reference
+
+| Col | Field | Description |
+|:---:|-------|-------------|
+| 0 | generation | training step (logged every 100) |
+| 1 | loss_total | total weighted loss |
+| 2 | loss_L1 | L1 regularization |
+| 3 | loss_L2 | L2 regularization |
+| 4 | RMSE_e_train | energy RMSE on train (eV/atom) |
+| 5 | RMSE_f_train | force RMSE on train (eV/Å) |
+| 6 | RMSE_v_train | virial RMSE on train (eV/atom) |
+| 7 | RMSE_e_test | energy RMSE on test (eV/atom) |
+| 8 | RMSE_f_test | force RMSE on test (eV/Å) |
+| 9 | RMSE_v_test | virial RMSE on test (eV/atom) |
+
+### Notes on this single-frame test
+
+- Energy RMSE = 0 is expected — one frame is trivially fit.
+- Force RMSE = 0.068 eV/Å is acceptable for a pipeline test but too high
+  for production. Real training needs hundreds of diverse frames.
+- No test set was used (`test.xyz` absent), so test columns are all zero.
+- This example validates the **workflow plumbing**, not the potential quality.
+
 ## Key hyperparameters
 
 ### Descriptor
