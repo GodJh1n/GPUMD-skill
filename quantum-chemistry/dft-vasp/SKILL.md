@@ -55,6 +55,29 @@ If prerequisites are missing, stop and ask for them.
 1. If user requests band-structure workflow: route to `dft-vasp/band`.
 1. If intent is ambiguous, ask one focused clarification question before routing.
 
+## vaspkit integration
+
+All subskills should use **vaspkit** for KPOINTS and POTCAR generation
+rather than manual file creation. This ensures:
+
+- correct pseudopotential selection (recommended variants like `Pb_d`)
+- reproducible k-mesh generation from spacing parameters
+- consistent POTCAR ordering matching POSCAR species
+
+Standard workflow:
+
+```bash
+# Generate KPOINTS + POTCAR in one step (spacing = 0.04 Å⁻¹)
+echo -e "102\n1\n0.04" | vaspkit
+
+# Or POTCAR only
+echo -e "103" | vaspkit
+```
+
+Prerequisite: `~/.vaspkit` must define `PBE_PATH` (or `LDA_PATH`) pointing
+to the VASP pseudopotential library. See `dft-vasp/static` for detailed
+vaspkit usage and k-spacing guidelines.
+
 ## Shared policy for all subskills
 
 - do not invent pseudopotentials
