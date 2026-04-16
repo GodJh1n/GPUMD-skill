@@ -5,216 +5,202 @@ compatibility: Requires a user-provided initial structure and enough DFT paramet
 license: GPL-3.0-only
 metadata:
   author: Yi-FanLi
-  version: '1.0'
+  version: '2.0'
   repository: https://gitlab.com/QEF/q-e
   qe_docs: https://www.quantum-espresso.org/Doc/user_guide/
 ---
 
-# DFT with Quantum ESPRESSO
+# DFT with Quantum ESPRESSO (pw.x)
 
-Use this skill to **build a QE DFT task** from a user-provided structure and DFT settings.
+Build a QE `pw.x` task from a user-provided structure and DFT settings.
+This skill prepares the input files only — hand off to `dpdisp-submit`
+for execution.
 
-## Scope
+## Units convention
 
-This skill should:
-
-- require a user-provided structure
-- read or normalize the structure input
-- identify the target calculation type
-- collect the minimum required DFT settings
-- generate the QE input file
-- organize the task directory in a way that can be handed off to a submission skill
-- state assumptions and unresolved choices
-
-This skill should **not**:
-
-- submit jobs
-- manage schedulers
-- handle remote execution
-- invent critical scientific parameters
-
-If the user wants the task submitted, hand off to another skill such as `dpdisp-submit` after the QE task is generated.
+QE is **Rydberg-atomic-units native**:
+- `celldm(1)` is in **Bohr**, `A` is in **Å** (pick one)
+- `ecutwfc`, `ecutrho`, total energy — all in **Rydberg** (`1 Ry ≈ 13.606 eV`)
+- SCF convergence `conv_thr` is in Rydberg
 
 ## Hard requirement
 
-The user must provide a structure.
+A user-provided structure (file or explicit cell + coordinates). Stop
+and ask if it is missing.
 
-Do not generate a QE task without a user-provided structure source. If the structure is missing, stop and ask for it.
+## Must provide
 
-## Structure input convention
+| Tag | Where | Role |
+|-----|-------|------|
+| `calculation` | `&CONTROL` | `'scf'`, `'nscf'`, `'bands'`, `'relax'`, `'vc-relax'`, `'md'`, `'vc-md'` |
+| `pseudo_dir` | `&CONTROL` | directory containing the UPF files |
+| `outdir` | `&CONTROL` | scratch — must be writable; prefix-named wavefunctions land here |
+| `prefix` | `&CONTROL` | project tag for `*.save` |
+| `ibrav` / `celldm` or `CELL_PARAMETERS` | `&SYSTEM` | lattice |
+| `nat`, `ntyp` | `&SYSTEM` | counts must match `ATOMIC_POSITIONS` |
+| `ecutwfc` | `&SYSTEM` | wavefunction cutoff, Ry |
+| `ATOMIC_SPECIES` | card | pseudo per species (must exist in `pseudo_dir`) |
 
-Use this bundled example-plus-layout pattern as the reference:
+## Usually should be explicit
 
-- generated QE input example: `assets/pw-water-0.in`
-- user-provided structure staging pattern: `openclaw_input/` containing files such as `structure.xyz` and `CELL`
+| Tag | Role | Recommended |
+|-----|------|-------------|
+| `ecutrho` | density cutoff | `4 × ecutwfc` for NC, **`8–12 × ecutwfc` for ultrasoft/PAW** |
+| `input_dft` | override functional | only if pseudo doesn't match requested functional |
+| `occupations` + `smearing` + `degauss` | metallic systems | `'smearing'`, `'mv'` or `'mp'`, `0.01–0.02 Ry` |
+| `nspin`, `starting_magnetization(i)` | magnetic | always set for open-shell |
+| `conv_thr` | SCF threshold, Ry | `1.0d-8` routine, `1.0d-10` phonons/forces |
+| `mixing_beta` | density mixer | `0.7` insulator, `0.3–0.5` metal, `0.1` magnetic |
+| `K_POINTS automatic` | MP mesh | dense enough: `2π/a × Nk > 20 Bohr⁻¹` rule of thumb |
+| `electron_maxstep` | max SCF | `100` default, `200` for hard cases |
 
-Treat this as the canonical pattern for what the user is expected to provide and what this skill is expected to generate.
+## Pseudopotential sources
 
-The structure format does **not** need to be fixed to xyz. If the user provides another reasonable atomistic structure format, convert or normalize it as needed. When format conversion is needed, use the `dpdata-cli` skill.
+| Library | URL | Notes |
+|---------|-----|-------|
+| PSlibrary (PAW/USPP) | <https://pseudopotentials.quantum-espresso.org/> | Official QE PP site; use `psl.1.0.0` family |
+| SSSP Efficiency / Precision | <https://www.materialscloud.org/discover/sssp> | Curated per-element recommendations; start here for unfamiliar elements |
+| PseudoDojo (ONCVPSP) | <http://www.pseudo-dojo.org> | NC, `upf` format, with per-element `ecut` hints |
+| GBRV USPP | <https://www.physics.rutgers.edu/gbrv/> | Hard but fast USPP |
 
-For periodic systems, ensure cell information is preserved. If a plain xyz file is used, cell data must be provided separately, for example through a `CELL` file.
+Pseudo rules:
+- PAW / USPP pseudos need `ecutrho ≥ 8 × ecutwfc`. If you set
+  `ecutrho = 4 × ecutwfc` with PAW, the density is aliased and
+  energies are wrong by ~10 meV/atom silently.
+- NC (ONCVPSP) pseudos accept `ecutrho = 4 × ecutwfc` as the default.
+- Always match `input_dft` to the functional the pseudo was generated
+  for (visible in the UPF header `<PP_INFO>` block).
 
-For a concrete file-oriented workflow, see `references/commands-and-workflow.md`.
+## Concrete example — bulk silicon SCF (QE first-run tutorial)
 
-## Expected workflow
+Anchored on the canonical [QE user guide](https://www.quantum-espresso.org/Doc/pw_user_guide/)
+silicon example, modernized with the PSlibrary 1.0.0 PAW pseudo.
 
-1. Start from a user-provided structure.
-1. Normalize the structure into the task layout if needed.
-1. Determine the target QE calculation type.
-1. Collect only the missing critical DFT parameters.
-1. Generate the QE input file.
-1. Place the generated task in a runnable task directory.
-1. If submission is requested, pass that directory to `dpdisp-submit`.
+Task directory:
 
-## DFT parameters to collect
+```text
+Si_qe_scf/
+├── si.scf.in
+└── Si.pbe-n-kjpaw_psl.1.0.0.UPF     # from pseudopotentials.quantum-espresso.org
+```
 
-### Must provide
-
-Do not generate a formal QE task unless these are known or explicitly confirmed:
-
-- `calculation`
-- `input_dft`
-- `ecutwfc`
-- `pseudo_dir`
-- pseudopotential file for each element
-
-### Usually should be explicit
-
-These should normally be confirmed rather than guessed:
-
-- `vdw_corr` when dispersion may matter
-- `ecutrho` when relevant to the pseudopotential family or workflow
-- `K_POINTS` setting, for example `gamma` or an automatic mesh
-- occupation / smearing settings for metallic or ambiguous systems
-- `conv_thr`
-- `electron_maxstep`
-
-### Task-specific additions
-
-Also collect task-dependent parameters when relevant.
-
-For `relax` / `vc-relax`:
-
-- `forc_conv_thr`
-- `etot_conv_thr`
-- `cell_dofree` for `vc-relax`
-
-For `md`:
-
-- `nstep`
-- `dt`
-- `ion_temperature`
-- `tempw`
-- `ion_dynamics`
-
-For spin-polarized or magnetic systems:
-
-- `nspin`
-- `starting_magnetization`
-- charge or spin-related settings if requested
-
-For advanced workflows if explicitly requested:
-
-- Hubbard U settings
-- hybrid-functional settings
-- electric field settings such as `edir`, `emaxpos`, or related controls
-
-Do not ask for everything at once; ask only for the missing essentials.
-
-## Required behavior
-
-1. Inspect the provided structure if accessible.
-1. Determine elements, cell information, and coordinate representation.
-1. If format normalization is needed, convert the structure using `dpdata-cli`.
-1. Confirm the QE task type.
-1. Gather only the missing critical DFT settings.
-1. Generate the QE input yourself.
-1. Explain assumptions clearly.
-1. Flag unresolved scientific choices instead of hiding them.
-1. Prepare the task directory so another skill can submit it.
-
-## Template pattern
-
-Use the QE example input included in this repository:
-
-`assets/pw-water-0.in`
-
-as the reference pattern for how a QE task is organized and how the `pw.x` input is laid out.
-
-In this workflow:
-
-- the user provides the structure in `openclaw_input`-style form
-- this skill generates the QE input task, analogous to files like `assets/pw-water-0.in`
-- a separate submission skill handles the job script and submission stage
-
-Do not hard-code the example chemistry. Reuse only the workflow pattern.
-
-## Defaulting policy
-
-Allowed only for low-risk, clearly labeled assumptions.
-
-Reasonable provisional defaults:
-
-- `calculation='scf'` for a plain single-point request
-- standard electronic convergence threshold when the user does not care
-- basic verbosity settings
-
-Do **not** silently invent:
-
-- structure data
-- pseudopotential filenames
-- production cutoffs
-- production k-point meshes
-- magnetic state for open-shell systems
-- Hubbard / vdW / hybrid settings
-- metallic smearing behavior when the system character is unclear
-
-## Expected output
-
-Provide:
-
-1. the full QE input file
-1. a short summary of the chosen settings
-1. explicit assumptions
-1. any decisions the user should still confirm
-1. the generated task directory or file set for the next skill
-1. if submission is requested, explicitly say the next step is `dpdisp-submit`
-
-## Minimal `pw.x` structure
+`si.scf.in`:
 
 ```text
 &CONTROL
   calculation = 'scf'
-  prefix = 'system'
-  outdir = './'
+  prefix = 'si'
+  outdir = './tmp/'
+  pseudo_dir = './'
+  verbosity = 'low'
 /
 &SYSTEM
-  ibrav = 0
-  nat = ...
-  ntyp = ...
-  ecutwfc = ...
-  ecutrho = ...
+  ibrav = 2              ! FCC
+  celldm(1) = 10.2       ! Bohr (a ≈ 5.398 Å)
+  nat = 2
+  ntyp = 1
+  ecutwfc = 30.0         ! Ry
+  ecutrho = 240.0        ! Ry — 8×ecutwfc for the PAW pseudo
 /
 &ELECTRONS
   conv_thr = 1.0d-8
+  mixing_beta = 0.7
 /
 ATOMIC_SPECIES
-...
-CELL_PARAMETERS angstrom
-...
-ATOMIC_POSITIONS angstrom
-...
+  Si  28.086  Si.pbe-n-kjpaw_psl.1.0.0.UPF
+ATOMIC_POSITIONS alat
+  Si  0.00  0.00  0.00
+  Si  0.25  0.25  0.25
 K_POINTS automatic
-kx ky kz 0 0 0
+  6 6 6 0 0 0
 ```
 
-## Handoff rule
+Run:
 
-When the user asks to submit the generated QE task, do not implement submission logic here. Instead:
+```bash
+pw.x -i si.scf.in > si.scf.out
+```
 
-- finish generating the QE task directory and input file
-- tell the user the task is ready for submission
-- hand off to `dpdisp-submit`
+## Physical sanity checks after the run
+
+1. `grep 'convergence has been achieved' si.scf.out` — must report a
+   finite iteration count. For the tutorial setup above, SCF converges
+   in **8 iterations** (runtime-verified with QE 7.5).
+2. `grep '!    total energy' si.scf.out | tail -1` — final total energy.
+   For this 2-atom Si diamond cell with PAW PBE + `ecutwfc = 30 Ry`,
+   `ecutrho = 240 Ry`, `6×6×6` MP mesh, expect **≈ −93.450 Ry**
+   (= **−46.725 Ry/atom ≈ −635.7 eV/atom**). Drift > 1 mRy signals
+   `ecutrho` too low or missing PAW augmentation.
+3. `grep 'number of k points' si.scf.out` — for the `6×6×6` MP mesh with
+   FCC symmetry expect **16 irreducible k-points**.
+4. `grep 'estimated scf accuracy' si.scf.out | tail -1` — must be below
+   `conv_thr` (reported as `6.7E-12 Ry` for the reference run).
+5. `grep 'Fermi-Dirac smearing\|highest occupied' si.scf.out` — for an
+   insulator like Si, the code reports `highest occupied, lowest
+   unoccupied level` instead of a Fermi level; the HOMO-LUMO gap gives
+   a sanity check on the Si indirect gap (~0.6 eV in PBE).
+
+## Task-specific additions
+
+For `relax` / `vc-relax`:
+
+```text
+&CONTROL
+  calculation = 'relax'   ! or 'vc-relax'
+  forc_conv_thr = 1.0d-4  ! Ry/Bohr
+  etot_conv_thr = 1.0d-5  ! Ry
+/
+&IONS
+  ion_dynamics = 'bfgs'
+/
+&CELL                      ! only for vc-relax
+  cell_dynamics = 'bfgs'
+  cell_dofree = 'all'      ! 'ibrav', 'volume', '2Dxy', etc.
+/
+```
+
+For metals (add to `&SYSTEM`):
+
+```text
+  occupations = 'smearing'
+  smearing = 'mv'          ! Marzari-Vanderbilt cold smearing
+  degauss = 0.01           ! Ry
+```
+
+For magnetic systems:
+
+```text
+  nspin = 2
+  starting_magnetization(1) = 0.5
+```
+
+## Known build traps
+
+- PAW / USPP pseudos with `ecutrho = 4 × ecutwfc`: the density grid is
+  too coarse; energies look "converged" but are wrong by 5–50 meV/atom.
+  Always use `ecutrho = 8 × ecutwfc` unless the pseudo is NC.
+- Relaxations without `ecutrho` set explicitly: QE picks
+  `4 × ecutwfc`, which triggers the PAW trap above.
+- `ibrav = 0` + `CELL_PARAMETERS` is the only way to use an arbitrary
+  cell — `celldm` is **ignored** when `ibrav = 0`. A common silent bug
+  is to supply both and get the `celldm` interpretation.
+- `pseudo_dir` with a trailing component that doesn't exist: `pw.x`
+  exits with "upf file not found" — always use an absolute path in
+  production workflows.
+- Running metals without smearing yields NaN or eternally oscillating
+  SCF. `occupations = 'smearing'` is required whenever the system
+  crosses the Fermi level.
+- Hybrid functionals (`input_dft='hse'`, `'pbe0'`) need an extra
+  `nqx1/2/3` block and are ~100× slower — out of scope for this skill.
+
+## Expected output
+
+1. QE task directory with `.in` input file and staged pseudopotentials
+2. pseudopotential mapping summary (library, functional, `ecut` hint)
+3. settings summary (smearing / k-mesh / ecutwfc/ecutrho ratio rationale)
+4. sanity-check checklist (SCF steps, total energy, irreducible k-points)
+5. unresolved choices (functional, vdW, spin) for user confirmation
+6. handoff note to `dpdisp-submit`
 
 ## GPUMD / NEP integration
 
@@ -226,14 +212,3 @@ uvx dpdata pw_output -i qe/pw/scf -O train.xyz -o extxyz
 
 Verify virial sign convention after conversion before merging into a NEP
 training dataset.
-
-## Common failure points
-
-- missing user-provided structure
-- missing cell for periodic systems
-- incomplete pseudopotential mapping
-- `nat` / `ntyp` inconsistent with the structure
-- missing or poor cutoffs
-- missing or inappropriate smearing
-- omitted spin settings for magnetic cases
-- requesting post-processing or phonons without prerequisite context
