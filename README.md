@@ -257,9 +257,8 @@ agent-workflow/                    # workflow orchestration
   `tools/gpumd-tools/scripts/bootstrap_gpumd_tool_sources.sh`.
 - Each subskill follows the same pattern: agent checklist, annotated workflow,
   bundled templates, references, and expected output.
-- Repository engineering (`.schema/`, `.scripts/`, `.pre-commit-config.yaml`)
-  is adapted from `computational-chemistry-agent-skills` for frontmatter
-  validation and README generation.
+- Repository engineering conventions are adapted from
+  `computational-chemistry-agent-skills`.
 
 ## Reference sources
 
