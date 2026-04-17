@@ -9,3 +9,9 @@ venv/
 
 # Upstream cloned tool repositories are reproducible via the bootstrap script.
 gpumd-tool-sources/
+
+# Local dev / CI config
+.claude/
+.schema/
+.scripts/
+.pre-commit-config.yaml
